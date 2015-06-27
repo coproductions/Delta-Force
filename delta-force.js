@@ -16,21 +16,33 @@
           var maxLag = maxLag || 50;
           var startTime = Date.now();
           var counter = 0;
-          intervalId = setInterval(function () {
-            counter++;
-            console.log(counter)
-            var tickEventTime = Date.now();
-            self.emit('tick',{startTime : startTime});
-            var lag = tickEventTime - (counter*1000+startTime);
-            console.log(lag)
-            if(lag > maxLag){
-              self.emit('lag',{offsetTime : lag});
-            }
-            if(tickEventTime > startTime+(maxTime*1000)){
-              self.emit('complete',{totalTime : Date.now()-startTime})
-              clearInterval(intervalId);
-            }
-          }, 1000);
+          // var adjustedInterval = null;
+          var interval = 1000;
+          startInterval(interval);
+          function startInterval(intervalTime){
+            intervalId = setInterval(function () {
+              adjustedInterval = null;
+              counter++;
+              console.log(counter)
+              var tickEventTime = Date.now();
+              self.emit('tick',{startTime : startTime});
+              var lag = tickEventTime - (counter*1000+startTime);
+              interval = 1000 - lag;
+              console.log('adjustedInterval',interval)
+              if(lag > maxLag){
+                self.emit('lag',{offsetTime : lag});
+              }
+              if(tickEventTime > startTime+(maxTime*1000)){
+                self.emit('complete',{totalTime : Date.now()-startTime})
+                clearInterval(intervalId);
+              }
+              else{
+                clearInterval(intervalId)
+                startInterval(interval);
+              }
+
+            }, intervalTime);
+          }
         }
         this.stop = function(){
           var stopTime = Date.now();
