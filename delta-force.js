@@ -41,7 +41,7 @@
       console.log(event)
     }
 
-    myTimer.start(5);
+    // myTimer.start(7);
 
 
 
