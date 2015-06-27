@@ -12,7 +12,6 @@
         // self.i = 0;
 
         this.start = function(){
-
           var startTime = Date.now();
           intervalId = setInterval(function () {
             self.emit('tick',{startTime : startTime});
@@ -28,16 +27,7 @@
     util.inherits(Timer, EventEmitter);
 
     var myTimer = new Timer();
-        // console.log(myTimer)
 
-    // function tickTester(event){
-    //   console.log('running')
-    //   testCounter++;
-    //   if(Date.now() > thisTime+10000){
-    //     myTimer.removeListener('tick',tickTester);
-    //     console.log('timer ended counter:',testCounter)
-    //   }
-    // }
     myTimer.addListener('tick',tickLogger)
     myTimer.addListener('stopTimer',tickLogger)
 
@@ -47,18 +37,9 @@
 
     myTimer.start();
 
-    console.log('hello')
-
 
 
     setTimeout(myTimer.stop,5000);
-
-    // myTimer.stop();
-
-
-    // var myTimer = new Timer();
-
-    // console.log(Date.now())
 
 
 

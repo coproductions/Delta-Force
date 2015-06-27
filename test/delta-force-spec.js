@@ -10,10 +10,30 @@ describe('delta-force', function () {
     expect(testTimer instanceof deltaForce.EventEmitter).to.be.true;
   });
 
-  it('timer should emit a tick event every second', function () {
-    var testCounter = deltaForce.testCounter;
-    console.log(testCounter)
-
+  it('timer should emit a tick event every second', function (done) {
+    var testTimer = new deltaForce.Timer();
+    var startTime = null;
+    var stopTime = null;
+    testTimer.start();
+    testTimer.addListener('tick',timeTaker)
+    testTimer.addListener('stopTimer',timeTaker)
+    function timeTaker(event){
+      if(event.startTime){
+        startTime = event.startTime;
+      }
+      if(event.stopTime){
+        stopTime = event.stopTime;
+      }
+    }
+    setTimeout(tester,1000);
+    function tester(){
+      console.log('testing')
+      testTimer.stop();
+      expect(startTime).to.not.equal(null);
+      expect(stopTime).to.not.equal(null);
+      expect(stopTime>startTime).to.be.true;
+      done();
+    }
   });
 
 });
