@@ -11,11 +11,16 @@
       var intervalId = null;
         // self.i = 0;
 
-        this.start = function(){
+        this.start = function(maxTime){
+          var max = maxTime || 10;
           var startTime = Date.now();
           intervalId = setInterval(function () {
             self.emit('tick',{startTime : startTime});
-            }, 1000);
+            if(Date.now() > startTime+(max*1000)){
+              self.emit('complete',{totalTime : Date.now()-startTime})
+              clearInterval(intervalId);
+            }
+          }, 1000);
         }
         this.stop = function(){
           var stopTime = Date.now();
@@ -30,16 +35,17 @@
 
     myTimer.addListener('tick',tickLogger)
     myTimer.addListener('stopTimer',tickLogger)
+    myTimer.addListener('complete',tickLogger)
 
     function tickLogger(event){
       console.log(event)
     }
 
-    myTimer.start();
+    myTimer.start(5);
 
 
 
-    setTimeout(myTimer.stop,5000);
+    // setTimeout(myTimer.stop,5000);
 
 
 
