@@ -9,16 +9,15 @@
 
       var self = this;
       var intervalId = null;
-        // self.i = 0;
 
         this.start = function(maxTime,maxLag){
           var maxTime = maxTime || 10;
           var maxLag = maxLag || 50;
           var startTime = Date.now();
           var counter = 0;
-          // var adjustedInterval = null;
           var interval = 1000;
           startInterval(interval);
+          //  function to kick off the interval with interval as argument
           function startInterval(intervalTime){
             intervalId = setInterval(function () {
               adjustedInterval = null;
@@ -32,11 +31,13 @@
               if(lag > maxLag){
                 self.emit('lag',{offsetTime : lag});
               }
-              if(tickEventTime > startTime+(maxTime*1000)){
+              if(counter >= maxTime){
+                // if timer has reached maximum amount of iterations, stop it.
                 self.emit('complete',{totalTime : Date.now()-startTime})
                 clearInterval(intervalId);
               }
               else{
+                // if timer has not been stopped nor has completed, restart timer with adjusted interval.
                 clearInterval(intervalId)
                 startInterval(interval);
               }
