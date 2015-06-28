@@ -30,14 +30,13 @@
               if(lag > maxLag){
                 self.emit('lag',{offsetTime : lag});
               }
+              clearInterval(intervalId);
               if(counter >= maxTime){
                 // if timer has reached maximum amount of iterations, stop it.
                 self.emit('complete',{totalTime : Date.now()-startTime})
-                clearInterval(intervalId);
               }
               else{
                 // if timer has not been stopped nor has completed, restart timer with adjusted interval.
-                clearInterval(intervalId)
                 startInterval(interval);
               }
 
