@@ -16,6 +16,7 @@
           var startTime = Date.now();
           var counter = 0;
           var interval = 1000;
+          self.emit('start',{startTime: startTime});
           startInterval(interval);
           //  function to kick off the interval with interval as argument
           function startInterval(intervalTime){
