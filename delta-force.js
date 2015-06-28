@@ -16,13 +16,14 @@
           var maxLag = maxLag || 50;
           var startTime = Date.now();
           var counter = 0;
+          self.emit('start',{startTime: startTime});
           intervalId = setInterval(function () {
             counter++;
-            console.log(counter)
+            // console.log(counter)
             var tickEventTime = Date.now();
             self.emit('tick',{startTime : startTime});
             var lag = tickEventTime - (counter*1000+startTime);
-            console.log(lag)
+            // console.log(lag)
             if(lag > maxLag){
               self.emit('lag',{offsetTime : lag});
             }
@@ -41,18 +42,18 @@
 
     util.inherits(Timer, EventEmitter);
 
-    var myTimer = new Timer();
+    // var myTimer = new Timer();
 
-    myTimer.addListener('tick',tickLogger)
-    myTimer.addListener('stopTimer',tickLogger)
-    myTimer.addListener('complete',tickLogger)
-    myTimer.addListener('lag',tickLogger)
+    // myTimer.addListener('tick',tickLogger)
+    // myTimer.addListener('stopTimer',tickLogger)
+    // myTimer.addListener('complete',tickLogger)
+    // myTimer.addListener('lag',tickLogger)
 
-    function tickLogger(event){
-      console.log(event)
-    }
+    // function tickLogger(event){
+    //   console.log(event)
+    // }
 
-    myTimer.start(7);
+    // myTimer.start(7);
 
 
 

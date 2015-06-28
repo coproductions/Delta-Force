@@ -15,59 +15,85 @@ describe('delta-force', function () {
     expect(testTimer instanceof deltaForce.EventEmitter).to.be.true;
   });
 
-  it('timer should emit a tick event every second', function (done) {
-    var startTime = null;
-    var stopTime = null;
-    testTimer.start();
-    testTimer.addListener('tick',timeTaker)
-    testTimer.addListener('stopTimer',timeTaker)
-    function timeTaker(event){
-      if(event.startTime){
-        startTime = event.startTime;
-      }
-      if(event.stopTime){
-        stopTime = event.stopTime;
-      }
-    }
-    setTimeout(tester,4000);
-    function tester(){
-      console.log('testing 123')
-      testTimer.stop();
-      console.log('startTime 123',startTime)
-      console.log('stopTime 123',stopTime)
-      expect(startTime).to.not.equal(null);
-      expect(stopTime).to.not.equal(null);
-      expect(stopTime>startTime).to.be.true;
-      done();
-    }
-  });
+  // it('timer should emit a tick event every second', function (done) {
+  //   var startTime = null;
+  //   var stopTime = null;
+  //   testTimer.start();
+  //   testTimer.addListener('tick',timeTaker)
+  //   testTimer.addListener('stopTimer',timeTaker)
+  //   function timeTaker(event){
+  //     if(event.startTime){
+  //       startTime = event.startTime;
+  //     }
+  //     if(event.stopTime){
+  //       stopTime = event.stopTime;
+  //     }
+  //   }
+  //   setTimeout(tester,4000);
+  //   function tester(){
+  //     console.log('testing 123')
+  //     testTimer.stop();
+  //     console.log('startTime 123',startTime)
+  //     console.log('stopTime 123',stopTime)
+  //     expect(startTime).to.not.equal(null);
+  //     expect(stopTime).to.not.equal(null);
+  //     expect(stopTime>startTime).to.be.true;
+  //     done();
+  //   }
+  // });
 
-  it('timer should automatically stop after 10 seconds if no argument passed', function (done) {
-    testTimer.start();
-    var counter = 0;
-    testTimer.addListener('tick',tickCounter)
-    function tickCounter(event){
-      counter++;
+  // it('timer should automatically stop after 10 seconds if no argument passed', function (done) {
+  //   testTimer.start();
+  //   var counter = 0;
+  //   testTimer.addListener('tick',tickCounter)
+  //   function tickCounter(event){
+  //     counter++;
+  //   }
+  //   setTimeout(tester,11000);
+  //   function tester(){
+  //     console.log('counter',counter)
+  //     expect(counter).to.equal(10);
+  //     done();
+  //   }
+
+  // });
+  // it('should stop after n seconds being passed argument n', function (done) {
+  //   testTimer.start(3);
+  //   var counter = 0;
+  //   testTimer.addListener('tick',tickCounter)
+  //   function tickCounter(event){
+  //     counter++;
+  //   }
+  //   setTimeout(tester,11000);
+  //   function tester(){
+  //     console.log('counter',counter)
+  //     expect(counter).to.equal(3);
+  //     done();
+  //   }
+  // });
+  it('should emit a lag event that states the lag time', function (done) {
+    var start = null;
+    var complete = null;
+    var lag = null;
+    testTimer.addListener('start',logStart);
+    testTimer.start(10,20);
+    testTimer.addListener('lag',logLag)
+    testTimer.addListener('complete',logComplete);
+    function logComplete(event){
+      complete = event.totalTime;
+      console.log('totaltime',complete)
+    }
+    function logStart(event){
+      start = event.startTime;
+      console.log('startTime',start)
+    }
+    function logLag(event){
+      lag = event.offsetTime;
+      console.log('lag',lag);
     }
     setTimeout(tester,11000);
     function tester(){
-      console.log('counter',counter)
-      expect(counter).to.equal(10);
-      done();
-    }
-
-  });
-  it('should stop after n seconds being passed argument n', function (done) {
-    testTimer.start(3);
-    var counter = 0;
-    testTimer.addListener('tick',tickCounter)
-    function tickCounter(event){
-      counter++;
-    }
-    setTimeout(tester,11000);
-    function tester(){
-      console.log('counter',counter)
-      expect(counter).to.equal(3);
+      expect(complete - lag).to.equal(10000);
       done();
     }
   });
